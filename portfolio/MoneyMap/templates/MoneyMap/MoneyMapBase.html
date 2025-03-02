@@ -1,12 +1,16 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>MoneyMap</title>
+    <link rel="icon" href="{% static 'Images/diamond.svg' %}" type="image/x-icon">
 </head>
 <body>
     <h1>Money Map Base home</h1>
+    <img src="{% static 'Images/diamond.svg' %}" alt="">
     {% block content %}{% endblock %}
 </body>
 </html>
