@@ -2,4 +2,17 @@
 
 {% block content %}
     <h1>Expense</h1>
+    <div class="flex justify-between items-center p-4 bg-white shadow-md rounded-md mb-6">
+        <h2 class="text-lg font-semibold">Select Timeframe</h2>
+        <div class="flex space-x-2">
+            <button class="px-3 py-1 bg-gray-200 text-gray-700 rounded-md shadow hover:bg-gray-300">Daily</button>
+            <button class="px-3 py-1 bg-gray-200 text-gray-700 rounded-md shadow hover:bg-gray-300">Weekly</button>
+            <button class="px-3 py-1 bg-gray-200 text-gray-700 rounded-md shadow hover:bg-gray-300">Monthly</button>
+            <button class="px-3 py-1 bg-gray-200 text-gray-700 rounded-md shadow hover:bg-gray-300">Quarterly</button>
+            <button class="px-3 py-1 bg-gray-200 text-gray-700 rounded-md shadow hover:bg-gray-300">Half-Yearly</button>
+            <button class="px-3 py-1 bg-gray-200 text-gray-700 rounded-md shadow hover:bg-gray-300">Yearly</button>
+            <button class="px-3 py-1 bg-blue-200 text-blue-700 rounded-md shadow hover:bg-blue-300">Custom</button>
+        </div>
+    </div>
+    
 {% endblock %}

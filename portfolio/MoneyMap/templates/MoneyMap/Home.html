@@ -1,5 +1,265 @@
 {% extends "MoneyMap/MoneyMapBase.html" %}
+{% load static %}
 
 {% block content %}
-    <h1>Home</h1>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+<script src="https://cdn.jsdelivr.net/npm/luxon"></script>
+{% comment %} KPI section {% endcomment %}
+
+<div class="m-10 flex gap-12">
+    <div class="bg-green-100 p-5 rounded-md flex items-center justify-center w-1/4">
+        <div class="flex flex-col text-center">
+            <p class="text-2xl font-bold text-green-700 flex items-center justify-center gap-1">
+                $100
+                <span class="text-xs text-green-600 flex items-center">🔼 +5%</span>
+            </p>
+            <span class="text-md font-medium text-green-700">Income</span>
+        </div>
+    </div>
+
+    <div class="bg-red-100 p-5 rounded-md flex items-center justify-center w-1/4">
+        <div class="flex flex-col text-center">
+            <p class="text-2xl font-bold text-red-700 flex items-center justify-center gap-1">
+                $100
+                <span class="text-xs text-red-600 flex items-center">🔽 -3%</span>
+            </p>
+            <span class="text-md font-medium text-red-700">Expense</span>
+        </div>
+    </div>
+
+    <div class="bg-blue-100 p-5 rounded-md flex items-center justify-center w-1/4">
+        <div class="flex flex-col text-center">
+            <p class="text-2xl font-bold text-blue-700 flex items-center justify-center gap-1">
+                $100
+                <span class="text-xs text-blue-600 flex items-center">🔼 +8%</span>
+            </p>
+            <span class="text-md font-medium text-blue-700">Investment</span>
+        </div>
+    </div>    
+
+    <div class="bg-white p-5 rounded-md flex items-center justify-center w-1/4">
+        <div class="flex flex-col text-center">
+            <p class="text-2xl font-bold text-gray-700 flex items-center justify-center gap-1">
+                $100
+                <span class="text-xs text-gray-600 flex items-center">🔽 -1%</span>
+            </p>
+            <span class="text-md font-medium text-gray-700">Balance</span>
+        </div>
+    </div>
+</div>
+
+
+
+{% comment %} Budget and Goal Progress section {% endcomment %}
+
+<div class="p-4 bg-gray-50 rounded-md m-10">
+    <!-- Budget Section -->
+    <div>
+        <h2 class="text-lg font-bold text-gray-800 mb-2">Budget</h2>
+        <div class="flex justify-between mb-1">
+            <span class="font-medium text-gray-700">Total Budget</span>
+            <span class="text-sm font-medium text-gray-700">$1,00,000 / $10,00,000</span>
+        </div>
+        <div class="relative w-full bg-gray-200 h-3 rounded-full">
+            <div class="bg-orange-500 h-3 rounded-full" style="width: 10%;"></div>
+            <div class="absolute right-[10%] top-0.5 w-0.5 h-2 bg-red-500"></div>
+        </div>
+        <!-- Expand Button -->
+        <button class="mt-2 text-blue-500 text-sm font-medium focus:outline-none expand-btn" onclick="toggleExpand('budget-subcategories', this)">
+            + Show More
+        </button>
+        <!-- Hidden Subcategories with Progress Bars -->
+        <div id="budget-subcategories" class="hidden transition-all duration-300 mt-2">
+            <div class="mb-1">
+                <div class="flex justify-between text-sm text-gray-700">
+                    <span>Food</span>
+                    <span>$20,000 / $50,000</span>
+                </div>
+                <div class="w-full bg-gray-200 h-2 rounded-full">
+                    <div class="bg-orange-400 h-2 rounded-full" style="width: 40%;"></div>
+                </div>
+            </div>
+            <div class="mb-1">
+                <div class="flex justify-between text-sm text-gray-700">
+                    <span>Transport</span>
+                    <span>$30,000 / $60,000</span>
+                </div>
+                <div class="w-full bg-gray-200 h-2 rounded-full">
+                    <div class="bg-orange-400 h-2 rounded-full" style="width: 50%;"></div>
+                </div>
+            </div>
+            <div class="mb-1">
+                <div class="flex justify-between text-sm text-gray-700">
+                    <span>Entertainment</span>
+                    <span>$50,000 / $1,00,000</span>
+                </div>
+                <div class="w-full bg-gray-200 h-2 rounded-full">
+                    <div class="bg-orange-400 h-2 rounded-full" style="width: 50%;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- Goal Section -->
+<div class="p-4 bg-gray-50 rounded-md m-10">
+    <div>
+        <h2 class="text-lg font-bold text-gray-800 mb-2">Goal</h2>
+        <div class="flex justify-between mb-1">
+            <span class="font-medium text-gray-700">Total Goal</span>
+            <span class="text-sm font-medium text-gray-700">$1,00,000 / $10,00,000</span>
+        </div>
+        <div class="relative w-full bg-gray-200 h-3 rounded-full">
+            <div class="bg-blue-400 h-3 rounded-full" style="width: 10%;"></div>
+            <div class="absolute right-[10%] top-0.5 w-0.5 h-2 bg-green-500"></div>
+        </div>
+        <!-- Expand Button -->
+        <button class="mt-2 text-blue-500 text-sm font-medium focus:outline-none expand-btn" onclick="toggleExpand('goal-subcategories', this)">
+            + Show More
+        </button>
+        <!-- Hidden Subcategories with Progress Bars -->
+        <div id="goal-subcategories" class="hidden transition-all duration-300 mt-2">
+            <div class="mb-1">
+                <div class="flex justify-between text-sm text-gray-700">
+                    <span>Emergency Fund</span>
+                    <span>$40,000 / $1,00,000</span>
+                </div>
+                <div class="w-full bg-gray-200 h-2 rounded-full">
+                    <div class="bg-blue-300 h-2 rounded-full" style="width: 40%;"></div>
+                </div>
+            </div>
+            <div class="mb-1">
+                <div class="flex justify-between text-sm text-gray-700">
+                    <span>Vacation</span>
+                    <span>$30,000 / $90,000</span>
+                </div>
+                <div class="w-full bg-gray-200 h-2 rounded-full">
+                    <div class="bg-blue-300 h-2 rounded-full" style="width: 33.3%;"></div>
+                </div>
+            </div>
+            <div class="mb-1">
+                <div class="flex justify-between text-sm text-gray-700">
+                    <span>Education</span>
+                    <span>$30,000 / $60,000</span>
+                </div>
+                <div class="w-full bg-gray-200 h-2 rounded-full">
+                    <div class="bg-blue-300 h-2 rounded-full" style="width: 50%;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% comment %} Category Split Graph {% endcomment %}
+
+
+
+<div class="bg-white m-10 pt-10 rounded-md">
+    <!-- Heading -->
+    <h1 class="text-2xl font-bold text-gray-800 text-center mb-6">Financial Overview</h1>
+
+    <!-- Chart Section -->
+    <div class="bg-white p-8 rounded-lg shadow-md flex gap-8 justify-center">
+        <!-- Income -->
+        <div class="flex flex-col items-center">
+            <canvas id="incomeChart"></canvas>
+            <button class="mt-4 px-4 py-1 bg-green-100 text-green-700 font-medium rounded-md shadow-md hover:bg-green-200">
+                + Income
+            </button>
+        </div>
+        <!-- Expense -->
+        <div class="flex flex-col items-center">
+            <canvas id="expenseChart"></canvas>
+            <button class="mt-4 px-4 py-1 bg-red-100 text-red-700 font-medium rounded-md shadow-md hover:bg-red-200">
+                + Expense
+            </button>
+        </div>
+        <!-- Investment -->
+        <div class="flex flex-col items-center">
+            <canvas id="investChart"></canvas>
+            <button class="mt-4 px-4 py-1 bg-blue-100 text-blue-700 font-medium rounded-md shadow-md hover:bg-blue-200">
+                + Investment
+            </button>
+        </div>
+    </div>
+</div>
+
+
+{% comment %} Daily trend {% endcomment %}
+
+<div class="bg-white m-10 rounded-md flex justify-center items-center p-6 shadow-lg">
+
+    <div class="bg-white p-6 rounded-lg w-full max-w-6xl">
+        <h1 class="text-2xl font-bold text-gray-800 text-center mb-6">Daily Financial Trend</h1>
+        <canvas id="barChart"></canvas>
+    </div>
+</div>
+
+
+{% comment %} Recent Transactions {% endcomment %}
+
+<div class="bg-white m-10 rounded-md p-6 shadow-lg w-full max-w-6xl border border-gray-300">
+    <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-semibold text-purple-700">Recent Transactions</h2>
+        <a href="{% url 'money_map_transaction' %}" class="text-purple-500 text-sm hover:underline">View All</a>
+    </div>
+
+    <table class="w-full border border-gray-300 rounded-md">
+        <thead>
+            <tr class="bg-gray-800 text-white border-b border-gray-500">
+                <th class="text-left px-4 py-3 font-semibold border-r border-gray-600">Date</th>
+                <th class="text-left px-4 py-3 font-semibold border-r border-gray-600">Type</th>
+                <th class="text-left px-4 py-3 font-semibold border-r border-gray-600">Category</th>
+                <th class="text-left px-4 py-3 font-semibold border-r border-gray-600">Description</th>
+                <th class="text-left px-4 py-3 font-semibold">Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="bg-gray-100 border-b border-gray-300">
+                <td class="px-4 py-3 border-r border-gray-300 whitespace-nowrap">2025-03-10</td>
+                <td class="px-4 py-3 text-green-600 border-r border-gray-300">Income</td>
+                <td class="px-4 py-3 border-r border-gray-300">Salary</td>
+                <td class="px-4 py-3 border-r border-gray-300">Received March salary from ABC Corp, including a performance bonus.</td>
+                <td class="px-4 py-3 font-semibold">$5,000</td>
+            </tr>
+            <tr class="bg-white border-b border-gray-300">
+                <td class="px-4 py-3 border-r border-gray-300 whitespace-nowrap">2025-03-09</td>
+                <td class="px-4 py-3 text-red-600 border-r border-gray-300">Expense</td>
+                <td class="px-4 py-3 border-r border-gray-300">Food</td>
+                <td class="px-4 py-3 border-r border-gray-300">Weekly grocery shopping at the local supermarket, including fresh vegetables and snacks.</td>
+                <td class="px-4 py-3 font-semibold">$120</td>
+            </tr>
+            <tr class="bg-gray-100 border-b border-gray-300">
+                <td class="px-4 py-3 border-r border-gray-300 whitespace-nowrap">2025-03-08</td>
+                <td class="px-4 py-3 text-red-600 border-r border-gray-300">Expense</td>
+                <td class="px-4 py-3 border-r border-gray-300">Transport</td>
+                <td class="px-4 py-3 border-r border-gray-300">Gas refill for the car after a long trip to the countryside.</td>
+                <td class="px-4 py-3 font-semibold">$50</td>
+            </tr>
+            <tr class="bg-white border-b border-gray-300">
+                <td class="px-4 py-3 border-r border-gray-300 whitespace-nowrap">2025-03-07</td>
+                <td class="px-4 py-3 text-red-600 border-r border-gray-300">Expense</td>
+                <td class="px-4 py-3 border-r border-gray-300">Entertainment</td>
+                <td class="px-4 py-3 border-r border-gray-300">Watched the latest action movie in IMAX with friends.</td>
+                <td class="px-4 py-3 font-semibold">$15</td>
+            </tr>
+            <tr class="bg-gray-100">
+                <td class="px-4 py-3 border-r border-gray-300 whitespace-nowrap">2025-03-06</td>
+                <td class="px-4 py-3 text-green-600 border-r border-gray-300">Income</td>
+                <td class="px-4 py-3 border-r border-gray-300">Freelance</td>
+                <td class="px-4 py-3 border-r border-gray-300">Payment received for designing a brand logo for a startup client.</td>
+                <td class="px-4 py-3 font-semibold">$250</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+
+
+<script src="{% static 'js/home.js' %}"></script>
+
 {% endblock %}
