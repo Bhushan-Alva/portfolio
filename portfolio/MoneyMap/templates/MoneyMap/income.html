@@ -1,17 +1,288 @@
 {% extends "MoneyMap/MoneyMapBase.html" %}
+{% load static %}
 
 {% block content %}
-    <h1>Income</h1>
-    <div class="flex justify-between items-center p-4 bg-white shadow-md rounded-md mb-6">
+<div class="p-10">
+    <!-- Timeframe Selection -->
+    <div class="flex justify-between items-center p-4 bg-white shadow-md rounded-md mb-10">
         <h2 class="text-lg font-semibold">Select Timeframe</h2>
-        <div class="flex space-x-2">
-            <button class="px-3 py-1 bg-gray-200 text-gray-700 rounded-md shadow hover:bg-gray-300">Daily</button>
-            <button class="px-3 py-1 bg-gray-200 text-gray-700 rounded-md shadow hover:bg-gray-300">Weekly</button>
-            <button class="px-3 py-1 bg-gray-200 text-gray-700 rounded-md shadow hover:bg-gray-300">Monthly</button>
-            <button class="px-3 py-1 bg-gray-200 text-gray-700 rounded-md shadow hover:bg-gray-300">Quarterly</button>
-            <button class="px-3 py-1 bg-gray-200 text-gray-700 rounded-md shadow hover:bg-gray-300">Half-Yearly</button>
-            <button class="px-3 py-1 bg-gray-200 text-gray-700 rounded-md shadow hover:bg-gray-300">Yearly</button>
-            <button class="px-3 py-1 bg-blue-200 text-blue-700 rounded-md shadow hover:bg-blue-300">Custom</button>
+        <div class="flex flex-wrap gap-2">
+            <button class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition">All</button>
+            <button class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition">Daily</button>
+            <button class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition">Weekly</button>
+            <button class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition">Monthly</button>
+            <button class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition">Quarterly</button>
+            <button class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition">Half-Yearly</button>
+            <button class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition">Yearly</button>
+            <button class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition">Custom</button>
         </div>
     </div>
+
+    <div class="bg-white shadow-md rounded-lg p-6 mb-10">
+        <h2 class="text-xl font-semibold mb-4">Income Overview</h2>
+    
+        <!-- Total Income -->
+        <div class="flex flex-col items-center text-center">
+            <h3 id="totalIncome" class="text-4xl font-bold text-green-600">$12,500</h3>
+            <p class="text-gray-500 text-lg">Total Income (This Month)</p>
+        </div>
+    
+        <!-- Income Breakdown -->
+        <div id="incomeList" class="grid grid-cols-3 gap-4 mt-6">
+            <!-- Default categories (Only shown if transactions exist) -->
+        </div>
+    
+        <!-- Add Category Button -->
+        <div class="mt-6 text-center">
+            <button onclick="openModal()" class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition">
+                + Add Category
+            </button>
+        </div>
+    </div>
+    
+    <!-- Category Modal -->
+    <div id="categoryModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+        <div class="bg-white p-6 rounded-md shadow-lg w-[400px]">
+            <h2 class="text-xl font-semibold mb-4">Add Category</h2>
+    
+            <!-- Type Selection -->
+            <label class="block mb-2 font-medium">Type</label>
+            <select id="categoryType" class="w-full p-2 border rounded-md mb-3">
+                <option value="income">Income</option>
+                <option value="expense">Expense</option>
+                <option value="savings">Savings</option>
+            </select>
+    
+            <!-- Icon Picker -->
+            <label class="block mb-2 font-medium">Select Icon</label>
+            <input type="file" id="categoryIcon" class="w-full p-2 border rounded-md mb-3">
+    
+            <!-- Category Name -->
+            <label class="block mb-2 font-medium">Category Name</label>
+            <input type="text" id="categoryName" class="w-full p-2 border rounded-md mb-3" placeholder="E.g., Side Hustle">
+    
+            <!-- Actions -->
+            <div class="flex justify-between mt-4">
+                <button onclick="closeModal()" class="px-4 py-2 bg-gray-400 text-white rounded-md">Cancel</button>
+                <button onclick="addCategory()" class="px-4 py-2 bg-blue-500 text-white rounded-md">Save</button>
+            </div>
+        </div>
+    </div>
+    
+    
+
+    <!-- Transactions Section -->
+    <div class="mx-auto bg-white p-6 rounded-md shadow-md mb-10">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-2xl font-semibold text-gray-700">Income</h2>
+            <button onclick="document.getElementById('transactionModal').classList.remove('hidden')" class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition">
+                + Add Income
+            </button>
+        </div>
+
+        <!-- Filters & Sorting -->
+        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-4">
+            <input type="text" placeholder="Search transactions..." class="p-2 border rounded-md focus:ring focus:ring-indigo-300">
+            <select class="p-2 border rounded-md">
+                <option>All Status</option>
+                <option>Completed</option>
+                <option>Pending</option>
+            </select>
+            <select class="p-2 border rounded-md">
+                <option>All Payment Methods</option>
+                <option>Credit Card</option>
+                <option>Bank Transfer</option>
+                <option>Cash</option>
+            </select>
+            <select class="p-2 border rounded-md">
+                <option>All Recurring</option>
+                <option>Recurring</option>
+                <option>One-time</option>
+            </select>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-4 items-center">
+            <select class="p-2 border rounded-md">
+                <option>Sort: Newest</option>
+                <option>Oldest</option>
+                <option>Highest Amount</option>
+                <option>Lowest Amount</option>
+            </select>
+            <select class="p-2 border rounded-md" id="recordsPerPage">
+                <option value="5">Show 5</option>
+                <option value="10" selected>Show 10</option>
+                <option value="20">Show 20</option>
+            </select>
+            <div class="flex items-center gap-4 lg:col-span-2">
+                <button class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition">Export CSV</button>
+                <button class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition">Export Excel</button>
+                <button class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition">Export PDF</button>
+            </div>
+        </div>
+
+        <!-- Transactions Table with Horizontal Scrolling -->
+        <div class="overflow-x-auto w-full">
+            <table class="border-collapse bg-gray-50 rounded-lg min-w-[1400px] w-full">
+                <thead>
+                    <tr class="bg-gray-200 text-gray-700 h-12">
+                        <th class="p-4 text-left w-64 truncate">Date</th>
+                        <th class="p-4 text-left w-48 truncate">Category</th>
+                        <th class="p-4 text-left w-96 whitespace-normal">Description</th> <!-- Allows multi-line text -->
+                        <th class="p-4 text-left w-48 truncate">Amount</th>
+                        <th class="p-4 text-left w-32 truncate">Type</th>
+                        <th class="p-4 text-left w-40 truncate">Payment Method</th>
+                        <th class="p-4 text-left w-40 truncate">Tags</th>
+                        <th class="p-4 text-left w-32 truncate">Status</th>
+                        <th class="p-4 text-left w-32 truncate">Recurring</th>
+                        <th class="p-4 text-left w-64 truncate">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="transactionTable">
+                    <!-- Dynamic Rows will be added by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="mt-6 flex justify-between items-center">
+            <button id="prevPage" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition">Previous</button>
+            <span id="pageInfo" class="text-gray-700"></span>
+            <button id="nextPage" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition">Next</button>
+        </div>
+
+        <!-- Bulk Actions & Add Transaction -->
+        <!-- Import & Bulk Delete Actions -->
+        <div class="mt-4 flex justify-between">
+            <input type="file" id="importFile" class="hidden" accept=".csv, .xlsx">
+            <button onclick="document.getElementById('importFile').click()" class="px-4 py-2 bg-purple-500 text-white rounded-md hover:bg-purple-600 transition">
+                Import Income (CSV/Excel)
+            </button>
+            <button class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition">
+                Bulk Delete
+            </button>
+        </div>        
+    </div>
+    <div class="bg-white shadow-md rounded-lg p-6">
+        <h2 class="text-xl font-semibold mb-4">Income Insights</h2>
+    
+        <!-- Income vs Expenses -->
+        <div class="flex justify-between items-center mb-6">
+            <div class="text-center">
+                <p class="text-gray-500">Total Income</p>
+                <h3 class="text-2xl font-bold text-green-600">$12,500</h3>
+            </div>
+            <div class="text-center">
+                <p class="text-gray-500">Total Expenses</p>
+                <h3 class="text-2xl font-bold text-red-600">$7,200</h3>
+            </div>
+        </div>
+    
+        <!-- Pie Chart for Income Contribution -->
+<div class="w-full max-w-3xl mx-auto">
+    <div class="mb-6">
+        <canvas id="incomeSourceChart" class="w-full h-auto aspect-[1/1]"></canvas>
+    </div>
+</div>
+
+<!-- Bar Chart for Monthly Trends -->
+<div class="w-full max-w-3xl mx-auto">
+    <canvas id="monthlyIncomeChart" class="w-full h-auto aspect-[2/1]"></canvas>
+</div>
+
+<!-- Line Chart for Income Trends -->
+<div class="w-full max-w-3xl mx-auto mt-6">
+    <canvas id="incomeTrendChart" class="w-full h-auto aspect-[3/1]"></canvas>
+</div>
+
+</div>
+
+<div id="transactionModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+    <div class="bg-white p-6 rounded-md shadow-lg w-[500px] h-[550px] overflow-y-auto">
+        <h2 class="text-xl font-semibold mb-4">Add Transaction</h2>
+        
+        <form id="transactionForm">
+            <label class="block mb-2">Date</label>
+            <input type="date" class="w-full p-2 border rounded-md mb-3" required>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block mb-2">Type</label>
+                    <select class="w-full p-2 border rounded-md mb-3">
+                        <option value="Income">Income</option>
+                        <option value="Expense">Expense</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block mb-2">Category</label>
+                    <select class="w-full p-2 border rounded-md mb-3">
+                        <option>Groceries</option>
+                        <option>Salary</option>
+                        <option>Entertainment</option>
+                        <option>Utilities</option>
+                    </select>
+                </div>
+            </div>
+
+            <label class="block mb-2">Description</label>
+            <textarea class="w-full p-2 border rounded-md mb-3" required></textarea>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block mb-2">Amount</label>
+                    <input type="number" class="w-full p-2 border rounded-md mb-3" required>
+                </div>
+                <div>
+                    <label class="block mb-2">Payment Method</label>
+                    <select class="w-full p-2 border rounded-md mb-3">
+                        <option>Credit Card</option>
+                        <option>Bank Transfer</option>
+                        <option>Cash</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-2 mb-3">
+                <input type="checkbox" id="recurringCheckbox" class="w-4 h-4">
+                <label for="recurringCheckbox" class="text-sm">Recurring</label>
+            </div>
+
+            <div id="recurringFields" class="hidden">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block mb-2">Till When</label>
+                        <input type="date" class="w-full p-2 border rounded-md mb-3">
+                    </div>
+
+                    <div>
+                        <label class="block mb-2">Frequency</label>
+                        <select id="frequencySelect" class="w-full p-2 border rounded-md mb-3">
+                            <option value="Daily">Daily</option>
+                            <option value="Weekly">Weekly</option>
+                            <option value="Monthly">Monthly</option>
+                            <option value="Yearly">Yearly</option>
+                            <option value="Custom">Custom</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="customDaysField" class="hidden">
+                    <label class="block mb-2">Every how many days?</label>
+                    <input type="number" min="1" class="w-full p-2 border rounded-md mb-3">
+                </div>
+            </div>
+
+            <div class="flex justify-between mt-4">
+                <button type="button" id="closeModal" class="px-4 py-2 bg-gray-400 text-white rounded-md">Cancel</button>
+                <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-md">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+
+
+<script src="{% static 'js/income.js' %}"></script>
 {% endblock %}
